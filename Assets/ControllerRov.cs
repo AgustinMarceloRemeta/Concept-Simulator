@@ -7,8 +7,9 @@ public class ControllerRov : MonoBehaviour
 {
     WheelCollider[] wheels;
     [SerializeField]  WheelCollider frontL, frontR;
-    [SerializeField] float speed, MultiplySpeed, Turn;
+    [SerializeField] float speed, multiplySpeed, turn,brake;
     [SerializeField] Slider slider, sliderTurn;
+    public bool start;
     void Start()
     {
         wheels = FindObjectsOfType<WheelCollider>();
@@ -17,20 +18,31 @@ public class ControllerRov : MonoBehaviour
 
     void Update()
     {
-
+        if (!start) return;
+        foreach (var item in wheels)
+        {
+            item.motorTorque = speed * slider.value * Time.deltaTime * multiplySpeed;
+        }
     }
-
-    public void ChangeSpeed()
+    public void startBtn()
+    {
+        start = true;
+        foreach (var item in wheels)
+        {
+            item.brakeTorque = 0;
+        }
+    }
+    public void brakeBtn()
     {
         foreach (var item in wheels)
         {
-            item.motorTorque = speed * slider.value * Time.deltaTime * MultiplySpeed;
+            item.brakeTorque = brake;
         }
     }
     public void ChangeDirection()
     {
-      frontL.steerAngle = Turn * sliderTurn.value;
-      frontR.steerAngle = Turn * sliderTurn.value;
+      frontL.steerAngle = turn * sliderTurn.value;
+      frontR.steerAngle = turn * sliderTurn.value;
        
     }
 }
